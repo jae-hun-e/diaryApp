@@ -7,7 +7,7 @@ const Nav = createNativeStackNavigator();
 
 export default function Root() {
   return (
-    <Nav.Navigator screenOptions={{ headerShown: false }}>
+    <Nav.Navigator screenOptions={{ presentation: "modal", animation: "slide_from_bottom", headerShown: false }}>
       <Nav.Screen name="Tabs" component={Tabs} />
       <Nav.Screen name="Stacks" component={Stacks} />
     </Nav.Navigator>

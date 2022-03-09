@@ -8,7 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 const NavTabs = createBottomTabNavigator();
 
 const Tabs = () => (
-  <NavTabs.Navigator>
+  <NavTabs.Navigator screenOptions={{ headerShown: false }}>
     <NavTabs.Screen
       name="Home"
       component={Home}
