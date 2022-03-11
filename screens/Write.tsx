@@ -31,11 +31,14 @@ const Write = () => {
           </Emotion>
         ))}
       </Emotions>
-      <TextInput
-        placeholder="당신의 기분을 써주세요"
-        value={feeling}
-        onChangeText={(text) => setFeeling(text)}
-      />
+      <TextBox>
+        {selectEmotion ? <SelectEmotion>{selectEmotion}</SelectEmotion> : null}
+        <TextInput
+          placeholder="당신의 기분을 써주세요"
+          value={feeling}
+          onChangeText={(text) => setFeeling(text)}
+        />
+      </TextBox>
       <Btn onPress={onSubmit}>
         <BtnText>save</BtnText>
       </Btn>
@@ -57,6 +60,11 @@ const Title = styled.Text`
   font-size: 28px;
   font-weight: 500;
 `;
+
+const TextBox = styled.View`
+  position: relative;
+`;
+
 const TextInput = styled.TextInput`
   background-color: white;
   border-radius: 20px;
@@ -94,4 +102,10 @@ const Emotion = styled.TouchableOpacity`
 `;
 const EmotionText = styled.Text`
   font-size: 20px;
+`;
+const SelectEmotion = styled(EmotionText)`
+  position: absolute;
+  right: 10;
+  top: 10;
+  z-index: 1;
 `;
