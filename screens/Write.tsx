@@ -1,21 +1,34 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Alert } from "react-native";
 import styled from "styled-components/native";
+import { useDB } from "../DB/context";
 import colors from "../Theme/color";
-
-interface WriteProps {}
 
 const emotions = ["🤯", "🥲", "🤬", "🤗", "🥰", "😊", "🤩"];
 
-const Write = () => {
+const Write = ({ navigation: { goBack } }) => {
   const [selectEmotion, setEmotion] = useState("");
   const [feeling, setFeeling] = useState("");
 
-  console.log(selectEmotion, feeling);
+  // contextAPI를 사용하는 방법 (useContext를 이용해서 state값을 가져옴)
+  const realm = useDB();
+
+  // console.log(selectEmotion, feeling);
   const onSubmit = () => {
     if (feeling === "" || selectEmotion === "") {
       return Alert.alert("기분을 입력해주세요");
     }
+    realm.write(() => {
+      const test = realm.create("Feeling", {
+        _id: Date.now(),
+        emotion: selectEmotion,
+        message: feeling,
+      });
+      console.log(test);
+    });
+    setEmotion("");
+    setFeeling("");
+    goBack(); //!이전화면으로 돌아가기
   };
   return (
     <View>
@@ -92,7 +105,12 @@ const Emotions = styled.View`
   justify-content: space-between;
   margin-bottom: 20px;
 `;
-const Emotion = styled.TouchableOpacity`
+
+interface EmotionProps {
+  selected: boolean;
+}
+
+const Emotion = styled.TouchableOpacity<EmotionProps>`
   background-color: white;
   box-shadow: 1px 1px 3px rgba(41, 30, 95, 0.2);
   padding: 5px;
