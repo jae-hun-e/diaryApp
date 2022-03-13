@@ -2,21 +2,42 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import colors from "../Theme/color";
 import { Ionicons } from "@expo/vector-icons";
-import { FlatList, TouchableOpacity } from "react-native";
+import {
+  FlatList,
+  LayoutAnimation,
+  Platform,
+  TouchableOpacity,
+  UIManager,
+} from "react-native";
 import { useDB } from "../DB/context";
 
 const Home = ({ navigation: { navigate } }) => {
+  if (Platform.OS === "android") {
+    if (UIManager.setLayoutAnimationEnabledExperimental) {
+      UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+  }
   const realm = useDB();
-  const [feelings, setFeelings] = useState(realm.objects("Feeling"));
+  const [feelings, setFeelings] = useState([]);
   console.log(feelings);
 
   useEffect(() => {
     const feeling = realm.objects("Feeling");
-    // console.log(feeling);
-    // query문 작성하기
-    const lovely = feeling.filtered("emotion ='🥰' ");
-    // console.log(lovely);
+    feeling.addListener((feeling) => {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+      setFeelings(feeling.sorted("_id", true));
+    });
+    return () => {
+      feeling.removeAllListeners();
+    };
   }, []);
+
+  const onPress = (id) => {
+    realm.write(() => {
+      const feeling = realm.objectForPrimaryKey("Feeling", id);
+      realm.delete(feeling);
+    });
+  };
   return (
     <View>
       <Title> 내 일기장</Title>
@@ -24,10 +45,12 @@ const Home = ({ navigation: { navigate } }) => {
         data={feelings}
         keyExtractor={(feeling) => feeling._id + ""}
         renderItem={({ item }) => (
-          <Record>
-            <Emotion>{item.emotion}</Emotion>
-            <Message>{item.message}</Message>
-          </Record>
+          <TouchableOpacity onPress={() => onPress(item._id)}>
+            <Record>
+              <Emotion>{item.emotion}</Emotion>
+              <Message>{item.message}</Message>
+            </Record>
+          </TouchableOpacity>
         )}
         ItemSeparatorComponent={Vseparator}
       ></FlatList>
@@ -73,13 +96,13 @@ const BtnText = styled.Text``;
 const Record = styled.View`
   background-color: ${colors.cardColor};
   flex-direction: row;
-  justify-content: center;
   padding: 10px 20px;
   border-radius: 15px;
 `;
 
 const Emotion = styled.Text`
   font-size: 20px;
+  margin-right: 15px;
 `;
 const Message = styled.Text`
   font-size: 20px;
