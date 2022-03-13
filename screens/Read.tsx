@@ -1,8 +1,6 @@
 import * as React from "react";
 import styled from "styled-components/native";
 
-interface ReadProps {}
-
 const Read = () => {
   return (
     <View>
