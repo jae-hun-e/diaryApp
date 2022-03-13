@@ -10,6 +10,7 @@ import {
   UIManager,
 } from "react-native";
 import { useDB } from "../DB/context";
+import { BottomBannerAds } from "../components/Ads";
 
 const Home = ({ navigation: { navigate } }) => {
   if (Platform.OS === "android") {
@@ -41,7 +42,9 @@ const Home = ({ navigation: { navigate } }) => {
   return (
     <View>
       <Title> 내 일기장</Title>
+      <BottomBannerAds />
       <FlatList
+        style={{ marginVertical: 50 }}
         data={feelings}
         keyExtractor={(feeling) => feeling._id + ""}
         renderItem={({ item }) => (
@@ -76,7 +79,7 @@ const Title = styled.Text`
   color: ${colors.textColor};
   font-size: 40px;
   font-weight: 500;
-  margin-bottom: 100px;
+  margin-bottom: 20px;
 `;
 const Btn = styled.TouchableOpacity`
   position: absolute;

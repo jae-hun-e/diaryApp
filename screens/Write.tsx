@@ -1,6 +1,8 @@
-import React, { useContext, useState } from "react";
+import { AdMobInterstitial } from "expo-ads-admob";
+import React, { useState } from "react";
 import { Alert } from "react-native";
 import styled from "styled-components/native";
+import { BottomBannerAds } from "../components/Ads";
 import { useDB } from "../DB/context";
 import colors from "../Theme/color";
 
@@ -14,7 +16,7 @@ const Write = ({ navigation: { goBack } }) => {
   const realm = useDB();
 
   // console.log(selectEmotion, feeling);
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (feeling === "" || selectEmotion === "") {
       return Alert.alert("기분을 입력해주세요");
     }
@@ -28,6 +30,8 @@ const Write = ({ navigation: { goBack } }) => {
     });
     setEmotion("");
     setFeeling("");
+    await AdMobInterstitial.setAdUnitID("ca-app-pub-3940256099942544/1033173712"); //전면광고
+    await AdMobInterstitial.showAdAsync();
     goBack(); //!이전화면으로 돌아가기
   };
   return (
@@ -55,6 +59,7 @@ const Write = ({ navigation: { goBack } }) => {
       <Btn onPress={onSubmit}>
         <BtnText>save</BtnText>
       </Btn>
+      <BottomBannerAds />
     </View>
   );
 };
@@ -87,7 +92,7 @@ const TextInput = styled.TextInput`
 `;
 const Btn = styled.TouchableOpacity`
   width: 100%;
-  margin-top: 20px;
+  margin: 20px 0;
   background-color: ${colors.btnColor};
   padding: 10px 20px;
   align-items: center;
@@ -123,7 +128,7 @@ const EmotionText = styled.Text`
 `;
 const SelectEmotion = styled(EmotionText)`
   position: absolute;
-  right: 10;
-  top: 10;
+  right: 10px;
+  top: 10px;
   z-index: 1;
 `;
